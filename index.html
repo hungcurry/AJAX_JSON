@@ -1,15 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>json-test</title>
 </head>
+
 <body>
-  
 
 
-  
+  <div class="create">
+    <input type="text" placeholder="name">
+    <a href="javascript:;">Create</a>
+  </div>
+  <div class="delete">
+    <input type="text" placeholder="id">
+    <a href="javascript:;">Delete</a>
+  </div>
+  <div class="update">
+    <input type="text" placeholder="id" name="id">
+    <input type="text" placeholder="name" name="name">
+    <a href="javascript:;">Update</a>
+  </div>
+  <hr>
+  <ul id="users"></ul>
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.min.js'></script>
+  <script>
+    $(function () {
+
+      // get
+      $.ajax({
+        url: 'http://localhost:3000/users',
+        method: 'get',
+        dataType: 'json',
+        data: {}
+      }).done(function (res) {
+        console.log(res);
+        $('#users').empty(); // 
+        res.forEach(function (user) {
+          $('#users').append('<li>' + user.id + '.' + user.name + '</li>');
+        })
+      }).fail(function (err) {
+        console.log(err)
+      });
+      // post
+      $('.create > a').on('click',function(){
+        let name = $('.create > input').val().trim();
+        if(!name) return false;
+        $.ajax({
+          url:'http://localhost:3000/users/',
+          method:'post',
+          dataType:'json',
+          data:{
+            name:name
+          }
+        });
+      });
+      // Delete
+      $('.delete > a').on('click',function(){
+        let id = $('.delete > input').val().trim();
+        if(!id) return false;
+        $.ajax({
+          url:'http://localhost:3000/users/'+ id ,
+          method:'delete',
+          dataType:'json'
+        }).done(function(res){
+        console.log(res)
+        }).fail(function(err){
+        console.log(err)
+        });
+      });
+      // put
+      $('.update > a').on('click',function(){
+        let id = $('.update > input[name=id]').val().trim();
+        if(!id) return false;
+        let name = $('.update > input[name=name]').val().trim();
+        if(!name) return false;
+        $.ajax({
+          url:'http://localhost:3000/users/' + id,
+          method:'put',
+          dataType:'json',
+          data:{
+            name:name
+          }
+        })
+      })  
+
+    });
+
+
+  </script>
 </body>
+
 </html>
